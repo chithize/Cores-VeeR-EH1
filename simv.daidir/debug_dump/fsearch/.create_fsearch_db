@@ -1,0 +1,9 @@
+#!/bin/sh -h 
+PYTHONHOME=/data1/eda/synopsys/vcs/O-2018.09-SP2/etc/search/pyh
+export PYTHONHOME
+PYTHONPATH=/data1/eda/synopsys/vcs/O-2018.09-SP2/linux64/lib/pylib27
+export PYTHONPATH
+LD_LIBRARY_PATH=/data1/eda/synopsys/vcs/O-2018.09-SP2/linux64/lib:/data1/eda/synopsys/vcs/O-2018.09-SP2/linux64/lib/pylib27
+export LD_LIBRARY_PATH
+/data1/eda/synopsys/vcs/O-2018.09-SP2/linux64/bin/vcsfind_create_index.exe  -z  "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.daidir/debug_dump/fsearch/./idents_tapi.xml.gz" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.daidir/debug_dump/fsearch/./idents_tcXbLq.xml.gz" -o "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.daidir/debug_dump/fsearch/fsearch.db_tmp"
+\mv "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.daidir/debug_dump/fsearch/fsearch.db_tmp" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.daidir/debug_dump/fsearch/fsearch.db"

@@ -33,7 +33,7 @@ VCS = vcs
 VERILATOR = verilator
 VLOG = qverilog
 RIVIERA = riviera
-GCC_PREFIX = riscv64-unknown-elf
+GCC_PREFIX = riscv32-unknown-elf
 BUILD_DIR = snapshots/${snapshot}
 TBDIR = ${RV_ROOT}/testbench
 
@@ -48,10 +48,11 @@ ifneq (,$(wildcard $(TBDIR)/tests/$(TEST)))
 endif
 
 ifdef debug
- DEBUG_PLUS = +dumpon
+ DEBUG_PLUS = +dumpon +TC=$(TEST)
  IRUN_DEBUG = -access +rc
  IRUN_DEBUG_RUN = -input ${RV_ROOT}/testbench/input.tcl
- VCS_DEBUG = -debug_access
+ VCS_DEBUG = -debug_access+cbk -kdb +fsdb
+ #VCS_DEBUG = +fsdb
  VERILATOR_DEBUG = --trace
  RIVIERA_DEBUG = +access +r
 endif
@@ -106,7 +107,7 @@ verilator-build: ${TBFILES} ${BUILD_DIR}/defines.h test_tb_top.cpp
 	touch verilator-build
 
 vcs-build: ${TBFILES} ${BUILD_DIR}/defines.h
-	$(VCS) -full64 -assert svaext -sverilog +error+500 \
+	$(VCS) -full64 $(VCS_DEBUG) -assert svaext -sverilog +error+500  -LDFLAGS -Wl,--no-as-needed \
                 +incdir+${RV_ROOT}/design/lib \
                 +incdir+${RV_ROOT}/design/include \
 		+incdir+${BUILD_DIR}  +libext+.v\

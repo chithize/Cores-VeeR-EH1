@@ -1,0 +1,157 @@
+
+dual_div.exe:     file format elf32-littleriscv
+
+
+Disassembly of section .text:
+
+00000000 <_start>:
+   0:	b0201073          	csrw	minstret,zero
+   4:	b8201073          	csrw	minstreth,zero
+   8:	ee0000b7          	lui	ra,0xee000
+   c:	30509073          	csrw	mtvec,ra
+  10:	5f5550b7          	lui	ra,0x5f555
+  14:	55508093          	add	ra,ra,1365 # 5f555555 <STACK+0x5f53d4f5>
+  18:	7c009073          	csrw	0x7c0,ra
+  1c:	d05801b7          	lui	gp,0xd0580
+  20:	00010217          	auipc	tp,0x10
+  24:	fef20213          	add	tp,tp,-17 # 1000f <hw_data>
+  28:	125894b7          	lui	s1,0x12589
+  2c:	84048493          	add	s1,s1,-1984 # 12588840 <STACK+0x125707e0>
+  30:	00049537          	lui	a0,0x49
+  34:	d0850513          	add	a0,a0,-760 # 48d08 <STACK+0x30ca8>
+
+00000038 <TC_ds>:
+  38:	6311                	lui	t1,0x4
+  3a:	48830313          	add	t1,t1,1160 # 4488 <_end+0x4330>
+  3e:	839a                	mv	t2,t1
+  40:	4445                	li	s0,17
+  42:	026383b3          	mul	t2,t2,t1
+  46:	026404b3          	mul	s1,s0,t1
+  4a:	0263c633          	div	a2,t2,t1
+  4e:	0264c6b3          	div	a3,s1,t1
+  52:	4081                	li	ra,0
+  54:	02661463          	bne	a2,t1,7c <_failed>
+  58:	0085                	add	ra,ra,1
+  5a:	02869163          	bne	a3,s0,7c <_failed>
+
+0000005e <loop>:
+  5e:	00020283          	lb	t0,0(tp) # 0 <_start>
+  62:	00518023          	sb	t0,0(gp) # d0580000 <STACK+0xd0567fa0>
+  66:	0205                	add	tp,tp,1 # 1 <_start+0x1>
+  68:	fe029be3          	bnez	t0,5e <loop>
+
+0000006c <_finish>:
+  6c:	d05801b7          	lui	gp,0xd0580
+  70:	0ff00293          	li	t0,255
+  74:	00518023          	sb	t0,0(gp) # d0580000 <STACK+0xd0567fa0>
+  78:	fe000ae3          	beqz	zero,6c <_finish>
+
+0000007c <_failed>:
+  7c:	00010217          	auipc	tp,0x10
+  80:	f8420213          	add	tp,tp,-124 # 10000 <err>
+
+00000084 <_print>:
+  84:	8286                	mv	t0,ra
+  86:	03028293          	add	t0,t0,48
+  8a:	00518023          	sb	t0,0(gp)
+  8e:	bfc1                	j	5e <loop>
+  90:	0001                	nop
+  92:	0001                	nop
+  94:	0001                	nop
+  96:	0001                	nop
+  98:	0001                	nop
+  9a:	0001                	nop
+  9c:	0001                	nop
+  9e:	0001                	nop
+  a0:	0001                	nop
+  a2:	0001                	nop
+  a4:	0001                	nop
+  a6:	0001                	nop
+  a8:	0001                	nop
+  aa:	0001                	nop
+  ac:	0001                	nop
+  ae:	0001                	nop
+  b0:	0001                	nop
+  b2:	0001                	nop
+  b4:	0001                	nop
+  b6:	0001                	nop
+  b8:	0001                	nop
+  ba:	0001                	nop
+  bc:	0001                	nop
+  be:	0001                	nop
+  c0:	0001                	nop
+  c2:	0001                	nop
+  c4:	0001                	nop
+  c6:	0001                	nop
+  c8:	0001                	nop
+  ca:	0001                	nop
+  cc:	0001                	nop
+  ce:	0001                	nop
+  d0:	0001                	nop
+  d2:	0001                	nop
+  d4:	0001                	nop
+  d6:	0001                	nop
+  d8:	0001                	nop
+  da:	0001                	nop
+  dc:	0001                	nop
+  de:	0001                	nop
+  e0:	0001                	nop
+  e2:	0001                	nop
+  e4:	0001                	nop
+  e6:	0001                	nop
+  e8:	0001                	nop
+  ea:	0001                	nop
+  ec:	0001                	nop
+  ee:	0001                	nop
+  f0:	0001                	nop
+  f2:	0001                	nop
+  f4:	0001                	nop
+  f6:	0001                	nop
+  f8:	0001                	nop
+  fa:	0001                	nop
+  fc:	0001                	nop
+  fe:	0001                	nop
+ 100:	0001                	nop
+ 102:	0001                	nop
+ 104:	0001                	nop
+ 106:	0001                	nop
+ 108:	0001                	nop
+ 10a:	0001                	nop
+ 10c:	0001                	nop
+ 10e:	0001                	nop
+ 110:	0001                	nop
+ 112:	0001                	nop
+ 114:	0001                	nop
+ 116:	0001                	nop
+ 118:	0001                	nop
+ 11a:	0001                	nop
+ 11c:	0001                	nop
+ 11e:	0001                	nop
+ 120:	0001                	nop
+ 122:	0001                	nop
+ 124:	0001                	nop
+ 126:	0001                	nop
+ 128:	0001                	nop
+ 12a:	0001                	nop
+ 12c:	0001                	nop
+ 12e:	0001                	nop
+ 130:	0001                	nop
+ 132:	0001                	nop
+ 134:	0001                	nop
+ 136:	0001                	nop
+ 138:	0001                	nop
+ 13a:	0001                	nop
+ 13c:	0001                	nop
+ 13e:	0001                	nop
+ 140:	0001                	nop
+ 142:	0001                	nop
+ 144:	0001                	nop
+ 146:	0001                	nop
+ 148:	0001                	nop
+ 14a:	0001                	nop
+ 14c:	0001                	nop
+ 14e:	0001                	nop
+ 150:	0001                	nop
+ 152:	0001                	nop
+ 154:	0001                	nop
+ 156:	0001                	nop

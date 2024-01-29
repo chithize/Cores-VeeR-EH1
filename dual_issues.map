@@ -1,0 +1,46 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD /data2/open-riscv/buildenv/riscv32/lib/gcc/riscv32-unknown-elf/12.2.0/libgcc.a
+LOAD dual_issues.o
+LOAD /data2/open-riscv/buildenv/riscv32/lib/gcc/riscv32-unknown-elf/12.2.0/libgcc.a
+START GROUP
+LOAD /data2/open-riscv/buildenv/riscv32/lib/gcc/riscv32-unknown-elf/12.2.0/../../../../riscv32-unknown-elf/lib/libc.a
+LOAD /data2/open-riscv/buildenv/riscv32/lib/gcc/riscv32-unknown-elf/12.2.0/../../../../riscv32-unknown-elf/lib/libgloss.a
+END GROUP
+LOAD /data2/open-riscv/buildenv/riscv32/lib/gcc/riscv32-unknown-elf/12.2.0/libgcc.a
+                0x00000000                        . = 0x0
+
+.text           0x00000000      0x14c
+ *(.text*)
+ .text          0x00000000      0x14c dual_issues.o
+                0x00000000                _start
+                0x0000014c                        _end = .
+                0x00010000                        . = 0x10000
+
+.data           0x00010000       0x60
+ *(.*data)
+ .data          0x00010000       0x60 dual_issues.o
+                0x00010000                err
+                0x0001000f                hw_data
+ *(.rodata*)
+                0x00018060                        STACK = (ALIGN (0x10) + 0x8000)
+
+.bss            0x00010060        0x0
+ *(.bss)
+ .bss           0x00010060        0x0 dual_issues.o
+                0xd0580000                        . = 0xd0580000
+
+.data.io
+ *(.data.io)
+OUTPUT(dual_issues.exe elf32-littleriscv)
+
+.riscv.attributes
+                0x00000000       0x31
+ .riscv.attributes
+                0x00000000       0x31 dual_issues.o

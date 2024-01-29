@@ -1,0 +1,105 @@
+Magic 271485
+Revision Verdi_O-2018.09-SP2
+
+; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
+viewPort 0 38 3304 764 687 386
+
+; File list:
+; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
+openDirFile -d / "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/inter.fsdb"
+
+; file time scale:
+; fileTimeScale ### s|ms|us|ns|ps
+
+; signal spacing:
+signalSpacing 5
+
+; windowTimeUnit is used for zoom, cursor & marker
+; waveform viewport range
+zoom 0.000000 577.521757
+cursor 156.88686270166
+marker 0.000000
+
+; user define markers
+; userMarker time_pos marker_name color linestyle
+; visible top row signal index
+top 0
+; marker line index
+markerPos 9
+
+; event list
+; addEvent event_name event_expression
+; curEvent event_name
+
+
+
+COMPLEX_EVENT_BEGIN
+
+
+COMPLEX_EVENT_END
+
+
+
+; toolbar current search type
+; curSTATUS search_type
+curSTATUS ByChange
+
+
+addGroup "G1"
+activeDirFile "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/inter.fsdb"
+addSignal -h 25 /tb_top/rvtop/clk
+addSignal -h 25 -UNSIGNED -HEX /tb_top/rvtop/veer/dec/dec_i0_pc_d[31:1]
+addSignal -h 25 -UNSIGNED -HEX /tb_top/rvtop/veer/dec/dec_i1_pc_d[31:1]
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/dec_i0_decode_d
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/dec_i1_decode_d
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift0
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift1
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift2
+addSignal -h 25 /tb_top/rvtop/veer/dec/decode/i0_block_d
+addSignal -h 25 /tb_top/rvtop/veer/dec/decode/i1_block_d
+addSubGroup "/tb_top/rvtop/veer/dec/instbuff/dec_i1_decode_d@485(1s)#ActiveDriver"
+addSignal -h 25 /tb_top/rvtop/veer/dec/decode/freeze
+addSignal -h 25 /tb_top/rvtop/veer/dec/decode/i1_dp.legal
+addSignal -h 25 /tb_top/rvtop/veer/dec/decode/i1_valid_d
+endSubGroup "/tb_top/rvtop/veer/dec/instbuff/dec_i1_decode_d@485(1s)#ActiveDriver"
+addSignal -h 25 -UNSIGNED -HEX /tb_top/rvtop/veer/dec/dec_i0_inst_wb1[31:0]
+addSignal -h 25 -UNSIGNED -HEX /tb_top/rvtop/veer/dec/instbuff/dec_i0_instr_d[31:0]
+addSignal -h 25 -UNSIGNED -HEX /tb_top/rvtop/veer/dec/instbuff/dec_i1_instr_d[31:0]
+addSignal -h 25 /tb_top/rvtop/veer/dec/dec_ib0_valid_d
+addSignal -h 25 /tb_top/rvtop/veer/dec/mul_p
+addSignal -h 25 -UNSIGNED -HEX /tb_top/rvtop/veer/dec/dec_i0_pc_d[31:1]
+addSignal -h 25 /tb_top/rvtop/veer/dec/dec_i0_pc4_d
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift_ib1_ib0
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift_ib2_ib0
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift_ib2_ib1
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift_ib3_ib1
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift_ib3_ib2
+addSignal -h 25 /tb_top/rvtop/veer/dec/dec_tlu_dual_issue_disable
+addGroup "G2"
+
+; getSignalForm Scope Hierarchy Status
+; active file of getSignalForm
+activeDirFile "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/inter.fsdb"
+
+GETSIGNALFORM_SCOPE_HIERARCHY_BEGIN
+getSignalForm close
+
+"/tb_top"
+"/tb_top/rvtop"
+"/tb_top/rvtop/veer"
+"/tb_top/rvtop/veer/dec"
+"/tb_top/rvtop/veer/dec/decode"
+"/tb_top/rvtop/veer/dec/instbuff"
+
+SCOPE_LIST_BEGIN
+"/_vcs_unit__1703114041"
+"/tb_top/rvtop/veer"
+"/tb_top/rvtop/veer/dec/instbuff"
+"/tb_top"
+"/tb_top/rvtop"
+"/tb_top/rvtop/veer/dec"
+SCOPE_LIST_END
+
+GETSIGNALFORM_SCOPE_HIERARCHY_END
+
+

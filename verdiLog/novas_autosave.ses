@@ -1,0 +1,84 @@
+@verdi rc file Version 1.0
+[General]
+saveDB = TRUE
+relativePath = FALSE
+saveSingleView = FALSE
+saveNWaveWinId = 
+VerdiVersion = Verdi_O-2018.09-SP2
+[KeyNote]
+Line1 = Automatic Backup 0
+Line2 = Save Open Database Information: Yes
+Line3 = Path Option: Absolute Paths
+Line4 = Windows Option: All Windows
+[TestBench]
+ConstrViewShow = 0
+InherViewShow = 0
+FSDBMsgShow = 0
+AnnotationShow = 0
+Console = TRUE
+powerDumped = 0
+[hb]
+postSimFile = /data2/open-riscv/acemicro/acemicro_m1/m1-v0/inter.fsdb
+syncTime = 0
+viewport = 73 26 3766 2096 0 0 160 3764
+activeNode = "tb_top.rvtop.veer.dec.decode"
+activeScope = "tb_top.rvtop.veer.dec.decode"
+activeFile = "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/design/dec/dec_decode_ctl.sv"
+interactiveMode = False
+viewType = Source
+simulatorMode = False
+sourceBeginLine = 1395
+baMode = True
+srcLineNum = True
+AutoWrap = True
+IdentifyFalseLogic = False
+syncSignal = False
+traceMode = Hierarchical
+showTraceInSchema = True
+paMode = False
+funcMode = False
+powerAwareAnnot = True
+amsAnnot = True
+traceCrossHier = True
+DnDtraceCrossHierOnly = True
+traceIncTopPort = False
+leadingZero = False
+signalPane = False
+Scope1 = "tb_top.rvtop.veer.dec.decode"
+Scope2 = "tb_top.rvtop.veer.dec"
+Scope3 = "tb_top"
+Scope4 = "tb_top.rvtop.veer.dec.decode.i1_dec"
+sdfCheckUndef = FALSE
+simFlow = FALSE
+[hb.design]
+importCmd = "-dbdir" "./simv.daidir" 
+invokeDir = /data2/open-riscv/acemicro/acemicro_m1/m1-v0
+[hb.sourceTab.1]
+scope = tb_top.rvtop.veer.dec.decode
+File = /data2/open-riscv/acemicro/acemicro_m1/m1-v0/design/dec/dec_decode_ctl.sv
+Line = 1396
+[nMemoryManager]
+WaveformFile = /data2/open-riscv/acemicro/acemicro_m1/m1-v0/inter.fsdb
+UserActionNum = 0
+nMemWindowNum = 0
+[wave.0]
+viewPort = 0 38 3304 764 687 386
+primaryWindow = TRUE
+SessionFile = /data2/open-riscv/acemicro/acemicro_m1/m1-v0/verdiLog/novas_autosave.ses.wave.0
+displayGrid = FALSE
+hierarchicalName = FALSE
+snap = TRUE
+displayLeadingZeros = FALSE
+fixDelta = FALSE
+displayCursorMarker = FALSE
+autoUpdate = FALSE
+highlightGlitchs = FALSE
+waveformSyncCursorMarker = FALSE
+waveformSyncHorizontalRange = FALSE
+waveformSyncVerticalscroll = FALSE
+displayErrors = TRUE
+displayMsgSymbols = TRUE
+showMsgDescriptions = TRUE
+autoFit = FALSE
+displayDeltaY = FALSE
+centerCursor = FALSE

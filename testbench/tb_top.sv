@@ -13,6 +13,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
+parameter string fsdbfile = "simv.fsdb";
+
 `ifdef VERILATOR
 module tb_top ( input bit core_clk);
 `else
@@ -431,7 +434,25 @@ module tb_top;
         preload_iccm();
 
 `ifndef VERILATOR
-        if($test$plusargs("dumpon")) $dumpvars;
+        if($test$plusargs("dumpon"))
+        begin
+//    `ifdef FSDB
+          string fn;
+          string wfn;
+          if($value$plusargs("TC=%s", fn))
+             wfn = {fn,".fsdb"};  //sformatf("%s.fsdb",fn);
+          else
+             wfn = fsdbfile;
+          $fsdbDumpfile(wfn);
+          $fsdbDumpvars("+all");
+          //$fsdbDumpSVA;
+  //  `else
+  //        $fdisplay(stderr, "Error: +fsdbfile is FSDB-only; use +vcdfile/+vcdplus instead or recompile with FSDB=1");
+  //        $fatal;
+  //  `endif
+        end
+    
+       // if($test$plusargs("dumpon")) $dumpvars;
         forever  core_clk = #5 ~core_clk;
 `endif
     end

@@ -1,0 +1,5 @@
+debImport "-db" "./simv.daidir"
+wvCreateWindow
+wvSetPosition -win $_nWave2 {("G1" 0)}
+wvOpenFile -win $_nWave2 {/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.fsdb}
+debExit
