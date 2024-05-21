@@ -2,11 +2,11 @@ Magic 271485
 Revision Verdi_O-2018.09-SP2
 
 ; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
-viewPort 0 38 3323 1642 687 180
+viewPort 0 38 3158 1506 687 180
 
 ; File list:
 ; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
-openDirFile -d / "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.fsdb"
+openDirFile -d / "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/dual_div.fsdb"
 
 ; file time scale:
 ; fileTimeScale ### s|ms|us|ns|ps
@@ -16,8 +16,8 @@ signalSpacing 5
 
 ; windowTimeUnit is used for zoom, cursor & marker
 ; waveform viewport range
-zoom 372.361807 521.770026
-cursor 485.000000
+zoom 473.362241 963.825802
+cursor 625.000000
 marker 0.000000
 
 ; user define markers
@@ -25,7 +25,7 @@ marker 0.000000
 ; visible top row signal index
 top 0
 ; marker line index
-markerPos 5
+markerPos 20
 
 ; event list
 ; addEvent event_name event_expression
@@ -46,7 +46,7 @@ curSTATUS ByChange
 
 
 addGroup "G1"
-activeDirFile "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.fsdb"
+activeDirFile "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/dual_div.fsdb"
 addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/dec_i0_decode_d
 addSignal -h 25 -holdScope dec_i1_decode_d
 addSignal -h 25 /tb_top/rvtop/veer/dec/dec_i0_inst_wb1[31:0]
@@ -57,11 +57,8 @@ addSignal -h 25 -holdScope dec_i0_pc_d[31:1]
 addSignal -h 25 -holdScope dec_i1_pc_d[31:1]
 addSignal -h 25 -holdScope dec_ib0_valid_d
 addSignal -h 25 -holdScope mul_p
-addSignal -h 25 -holdScope dec_tlu_dual_issue_disable
-addSignal -h 25 -holdScope dec_i0_pc_d[31:1]
 addSignal -h 25 -holdScope dec_i0_pc4_d
-addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/dec_i1_decode_d
-addSignal -h 25 -holdScope shift0
+addSignal -h 25 /tb_top/rvtop/veer/dec/instbuff/shift0
 addSignal -h 25 -holdScope shift1
 addSignal -h 25 -holdScope shift2
 addSignal -h 25 -holdScope shift_ib1_ib0
@@ -69,11 +66,24 @@ addSignal -h 25 -holdScope shift_ib2_ib0
 addSignal -h 25 -holdScope shift_ib2_ib1
 addSignal -h 25 -holdScope shift_ib3_ib1
 addSignal -h 25 -holdScope shift_ib3_ib2
+addSignal -h 25 /tb_top/rvtop/veer/dec/dec_tlu_dual_issue_disable
 addGroup "G2"
+addSignal -h 25 /tb_top/rvtop/veer/clk
+addSignal -h 25 /tb_top/rvtop/veer/dec/decode/div_p
+addSignal -h 25 -holdScope div_pc[31:1]
+addSignal -h 25 -holdScope div_stall
+addSignal -h 25 -holdScope div_trigger[3:0]
+addSignal -h 25 -holdScope div_waddr_wb[4:0]
+addSignal -h 25 -holdScope div_wen_wb
+addSignal -h 25 -holdScope exu_div_finish
+addSignal -h 25 -holdScope exu_div_result[31:0]
+addSignal -h 25 -holdScope exu_div_stall
+addSignal -h 25 -holdScope i0_div_decode_d
+addGroup "G3"
 
 ; getSignalForm Scope Hierarchy Status
 ; active file of getSignalForm
-activeDirFile "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/simv.fsdb"
+activeDirFile "" "/data2/open-riscv/acemicro/acemicro_m1/m1-v0/dual_div.fsdb"
 
 GETSIGNALFORM_SCOPE_HIERARCHY_BEGIN
 getSignalForm close
@@ -83,6 +93,7 @@ getSignalForm close
 "/tb_top/rvtop"
 "/tb_top/rvtop/veer"
 "/tb_top/rvtop/veer/dec"
+"/tb_top/rvtop/veer/dec/decode"
 "/tb_top/rvtop/veer/dec/instbuff"
 
 SCOPE_LIST_BEGIN
@@ -92,6 +103,7 @@ SCOPE_LIST_BEGIN
 "/tb_top"
 "/tb_top/rvtop"
 "/tb_top/rvtop/veer/dec"
+"/tb_top/rvtop/veer/dec/decode"
 SCOPE_LIST_END
 
 GETSIGNALFORM_SCOPE_HIERARCHY_END
