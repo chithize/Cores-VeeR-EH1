@@ -63,6 +63,14 @@ class xtmux3(val width: Int) extends BlackBox(Map("WIDTH"->width)) {
   })
 }
 
+class xtmux4(val width: Int) extends BlackBox(Map("WIDTH"->width)) {
+  val io = IO(new Bundle {
+    // 定义输入输出端口
+    val out = Output(UInt(width.W)) 
+    val inputs = Input(Vec(4, UInt(width.W))) // 
+    val selects = Input(Vec(4, Bool())) //
+  })
+}
 // Generic LZC module: Wrong!
 // class Xacc_xtlzc(width: Int) extends Module {
 //   val io = IO(new Bundle {
@@ -132,7 +140,7 @@ class Xacc_lzc_generic(width: Int=32) extends Module {
 // class Xacc_lzc32 extends Xacc_xtlzc(32)
 //import chisel3._
 
-class Xacc_lzc32 extends Module {
+class xacc_lzc32 extends Module {
   val io = IO(new Bundle {
     val Age = Input(UInt(32.W))
     val Request = Input(UInt(32.W))
@@ -303,7 +311,7 @@ class Xacc_lzc8 extends Module {
   io.Grant := Mux(HiPrReqPresent, Cat(tmp_oh(3), ~tmp_oh(2, 0)), Cat(tmp_ol(3), ~tmp_ol(2, 0)))
 }
 
-class Xacc_pop_count extends Module {
+class xacc_pop_count extends Module {
   val io = IO(new Bundle {
     val VecIn = Input(UInt(32.W))
     val SumOut = Output(UInt(6.W))
@@ -395,34 +403,105 @@ class Xacc_pop_count2X16 extends Module {
 // class Xacc_xtlzc_8 extends Xacc_xtlzc(8)
 
 
-object  primitives{
-   def Xtmux32(width:Int,out: UInt, inputs: Seq[UInt], selects: Seq[Bool]): Unit = {
+object  primitives_wrapper{
+   def Xacc_lzc32(Age: UInt,Request: UInt): UInt ={
+    val Grant =Wire(UInt(32.W))
+    val xModule = Module(new xacc_lzc32())
+    xModule.io.Age := Age
+    xModule.io.Request := Request
+    Grant:=xModule.io.Grant
+    Grant
+   }
+
+    def Xacc_pop_count(VecIn: UInt): UInt ={
+    val Out =Wire(UInt(6.W))
+    val xModule = Module(new xacc_pop_count())
+        xModule.io.VecIn := VecIn
+        Out:=xModule.io.SumOut
+      Out
+   }  
+   def Xtmux32(width: Int,inputs: Seq[UInt], selects: Seq[Bool]): UInt = {
       require(inputs.length == 32 && selects.length == 32, "必须提供32个输入和32个选择信号")
+      val out=Wire(UInt(32.W))
       val xtmuxModule = Module(new xtmux32(width))
       xtmuxModule.io.inputs.zip(inputs).foreach { case (moduleInput, input) => moduleInput := input }
       xtmuxModule.io.selects.zip(selects).foreach { case (moduleSelect, select) => moduleSelect := select }
       out := xtmuxModule.io.out
+      out
    }
-   def Xtmux8(width:Int,out: UInt, inputs: Seq[UInt], selects: Seq[Bool]): Unit = {
+  def Xtmux32e(width: Int,inputs: Seq[UInt], selects: UInt): UInt = {
+      require(inputs.length == 32, "必须提供32个输入和32个选择信号")
+      val out=Wire(UInt(width.W))
+      val xtmuxModule = Module(new xtmux32e(width))
+      xtmuxModule.io.inputs.zip(inputs).foreach { case (moduleInput, input) => moduleInput := input }
+      xtmuxModule.io.select:= selects 
+      out := xtmuxModule.io.output
+      out
+   }
+   def Xtmux8(width: Int,/* out: UInt, */ inputs: Seq[UInt], selects: Seq[Bool]): UInt = {
       require(inputs.length == 8 && selects.length == 8, "必须提供8个输入和8个选择信号")
       val xtmuxModule = Module(new xtmux8(width))
       xtmuxModule.io.inputs.zip(inputs).foreach { case (moduleInput, input) => moduleInput := input }
       xtmuxModule.io.selects.zip(selects).foreach { case (moduleSelect, select) => moduleSelect := select }
-      out := xtmuxModule.io.out
+      // out := xtmuxModule.io.out
+      val out = xtmuxModule.io.out
+      out
    }
-   def Xtmux2(width:Int,out: UInt, inputs: Seq[UInt], selects: Seq[Bool]): Unit = {
+   def Xtmux2(width: Int,/* out: UInt,  */inputs: Seq[UInt], selects: Seq[Bool]): UInt = {
       require(inputs.length == 2 && selects.length == 2, "必须提供2个输入和2个选择信号")
       val xtmuxModule = Module(new xtmux2(width))
       xtmuxModule.io.inputs.zip(inputs).foreach { case (moduleInput, input) => moduleInput := input }
       xtmuxModule.io.selects.zip(selects).foreach { case (moduleSelect, select) => moduleSelect := select }
-      out := xtmuxModule.io.out
+      //out := xtmuxModule.io.out
+      val out = xtmuxModule.io.out
+      out
    }
-    def Xtmux3(width:Int,out: UInt, inputs: Seq[UInt], selects: Seq[Bool]): Unit = {
-      require(inputs.length == 3 && selects.length == 3, "必须提供8个输入和8个选择信号")
+
+   def Xtmux2e(width: Int,/* out: UInt,  */in0: UInt,in1: UInt, sel: Bool): UInt = {
+      //require(inputs.length == 2 && selects.length == 2, "必须提供2个输入和2个选择信号")
+      val xtmuxModule = Module(new xtmux2e(width))
+      xtmuxModule.io.in0 := in0 
+      xtmuxModule.io.in1 := in1
+      xtmuxModule.io.sel := sel
+
+      //out := xtmuxModule.io.out
+      val out = xtmuxModule.io.out
+      out
+   }
+
+    def Xtmux3(width: Int,/* out: UInt,  */inputs: Seq[UInt], selects: Seq[Bool]): UInt = {
+      require(inputs.length == 3 && selects.length == 3, "必须提供3个输入和3个选择信号")
       val xtmuxModule = Module(new xtmux3(width))
       xtmuxModule.io.inputs.zip(inputs).foreach { case (moduleInput, input) => moduleInput := input }
       xtmuxModule.io.selects.zip(selects).foreach { case (moduleSelect, select) => moduleSelect := select }
-      out := xtmuxModule.io.out
+      val out = xtmuxModule.io.out
+      //out := xtmuxModule.io.out
+      out
+   }
+
+    def Xtmux4(width: Int,/* out: UInt,  */inputs: Seq[UInt], selects: Seq[Bool]): UInt = {
+      require(inputs.length == 4 && selects.length == 4, "必须提供3个输入和3个选择信号")
+      val xtmuxModule = Module(new xtmux4(width))
+      xtmuxModule.io.inputs.zip(inputs).foreach { case (moduleInput, input) => moduleInput := input }
+      xtmuxModule.io.selects.zip(selects).foreach { case (moduleSelect, select) => moduleSelect := select }
+      val out = xtmuxModule.io.out
+      //out := xtmuxModule.io.out
+      out
+   }
+    def Xtmux(width: Int,/* out: UInt,  */inputs: Seq[UInt], selects: Seq[Bool]): UInt = {
+      require(inputs.length == selects.length, "输入和选择信号数目必须相等")
+      val xtmuxModule:{val io: Bundle { val inputs: Vec[UInt]; val selects: Vec[Bool]; val out: UInt }} = inputs.length match {
+               case 2 => Module(new xtmux2(width))
+               case 3 => Module(new xtmux3(width))
+               case 4 => Module(new xtmux4(width))
+               case 8 => Module(new xtmux8(width))
+               case _ => throw new IllegalArgumentException(s"Unsupported inputs length: ${inputs.length}")
+             }
+      xtmuxModule.io.inputs.zip(inputs).foreach { case (moduleInput, input) => moduleInput := input }
+      xtmuxModule.io.selects.zip(selects).foreach { case (moduleSelect, select) => moduleSelect := select }
+      val out = xtmuxModule.io.out
+      //out := xtmuxModule.io.out
+      out
    }
 
     def Xtclockbuffer(in: Clock): Clock = {
@@ -439,7 +518,7 @@ object  primitives{
 
 
 object xcff {
-  def apply(n: Int,clock:Clock,reset:Bool, gate:Bool, Input:UInt): UInt = {
+  def apply(n: Int,clock:Clock,reset:AsyncReset, gate:Bool, Input:UInt): UInt = {
       val out=Wire(UInt(n.W))
       withClockAndReset(clock,reset)
       {

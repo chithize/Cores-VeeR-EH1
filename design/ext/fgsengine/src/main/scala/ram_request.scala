@@ -1,3 +1,8 @@
+
+import chisel3._
+import chisel3.util._
+import primitives._
+import primitives.primitives_wrapper._
 //  -- 46434
 class SramRWAccess(ramNum: Int=2,bkNum: Int=2,sbkNum: Int=8,byteEnWidth: Int=8,addrWidth: Int=18)  extends Module {
    val entryBits=addrWidth-log2Ceil(sbkNum*byteEnWidth)
@@ -13,8 +18,8 @@ class SramRWAccess(ramNum: Int=2,bkNum: Int=2,sbkNum: Int=8,byteEnWidth: Int=8,a
         val final_wr_req_notrmw_sb=Input(Vec(sbkNum*bkNum,Bool()))
         val final_wr_req_sb       =Input(Vec(sbkNum*bkNum,Bool()))
 		val final_byte_en_req_sb  =Input(Vec(sbkNum*bkNum,UInt(byteEnWidth.W)))
-		val G2generalCLK          =Input(Bool())
-		val G2generalCLKEn        =Input(Clock()) 
+		val G2generalCLK          =Input(Clock())
+		val G2generalCLKEn        =Input(Bool()) 
         val WaitClkGate           =Input(Bool())
         val MyReset               =Input(Bool())
 
@@ -27,41 +32,42 @@ class SramRWAccess(ramNum: Int=2,bkNum: Int=2,sbkNum: Int=8,byteEnWidth: Int=8,a
 		
         val DRamRmwRd             =Output(Vec(ramNum,Vec(bkNum,Bool())))
         val DRamRmwWr             =Output(Vec(ramNum,Vec(bkNum,Bool())))
-        val DRamRdByteEn          =Output(Vec(ramNum,Vec(bkNum,UInt(sbkNum*byteEnWidth.W))))
-        val DRamWrByteEn          =Output(Vec(ramNum,Vec(bkNum,UInt(sbkNum*byteEnWidth.W))))
+        val DRamRdByteEn          =Output(Vec(ramNum,Vec(bkNum,UInt((sbkNum*byteEnWidth).W))))
+        val DRamWrByteEn          =Output(Vec(ramNum,Vec(bkNum,UInt((sbkNum*byteEnWidth).W))))
    })
 
      val G2CLK=io.G2generalCLK
      val g2GateEnable= (!io.WaitClkGate) && io.G2generalCLKEn
-	 val reset =  io.MyReset.asAsyncReset
-     val internalDramSbByteEn = Wire(Vec(ramNum,Vec(bkNum,UInt(sbkNum*byteEnWidth.W))))
+	 val localReset =  io.MyReset.asAsyncReset
+     val internalDramSbByteEn = Wire(Vec(ramNum,Vec(bkNum,UInt((sbkNum*byteEnWidth).W))))
 	 val DRamWr_notrmw_sb  =Wire(Vec(ramNum,Vec(bkNum,Vec(sbkNum,Bool()))))
      val DRamRmwRd_sb	   =Wire(Vec(ramNum,Vec(bkNum,Vec(sbkNum,Bool())))) 
 	 
       for(ramId <- 0 until ramNum)
 	     for(bkId <- 0 until bkNum){
 		   for(sbkId <- 0 until sbkNum){
-                io.DRamRdAddrSB(ramId)(bkId)(sbkId) := final_addr_req_sb(bkId*sbkNum+sbkId)(17,7)
-                val DRamRd_sb_var= final_val_dram_req_sb(bkId*sbkNum+sbkId) &&  (final_dram_id_rdreq_sb(bkId*sbkNum+sbkId) === ramId.U(1.W))
-				                                 !(final_sc8_req_sb(bkId*sbkNum+sbkId) || final_sc16_req_sb(bkId*sbkNum+sbkId))
-				val DRamWr_sb_var=final_wr_req_sb0 && (final_dram_id_wrreq_sb0 === ramId.U(1.W))
-				val DRamWr_notrmw_sb(ramId)(bkId)(sbkId)   = final_wr_req_notrmw_sb(bkId*sbkNum+sbkId) && 
-				                     (final_dram_id_wrreq_sb(bkId*sbkNum+sbkId) === ramId.U(ramIdBits.W))
-				val DRamRmwRd_sb(ramId)(bkId)(sbkId)       = final_val_dram_req_sb(bkId*sbkNum+sbkId) && 
-				                     (final_dram_id_rdreq_sb(bkId*sbkNum+sbkId) === ramId.U(ramIdBits.W)) && 
-									 final_inc16_req_sb(bkId*sbkNum+sbkId)
-				internalDramSbByteEn(ramId)(bkId)(sbkId) := final_byte_en_req_sb(bkId*sbkNum+sbkId)
-				io.DRamRdSB(ramId)(bkId)(sbkId)    :=xcff(1,G2CLK,reset,g2GateEnable,DRamRd_sb_var)
-                io.DRamWrSB(ramId)(bkId)(sbkId)    :=xcff(1,G2CLK,reset,g2GateEnable,DRamWr_sb_var)
+			    val subId=bkId*sbkNum+sbkId
+                io.DRamRdAddrSB(ramId)(bkId)(sbkId) := io.final_addr_req_sb(bkId*sbkNum+sbkId)(17,7)
+                val DRamRd_sb_var= io.final_val_dram_req_sb(bkId*sbkNum+sbkId) &&  (io.final_dram_id_rdreq_sb(bkId*sbkNum+sbkId) === ramId.U(1.W))
+				                                 !(io.final_sc8_req_sb(bkId*sbkNum+sbkId) || io.final_sc16_req_sb(bkId*sbkNum+sbkId))
+				val DRamWr_sb_var=io.final_wr_req_sb(subId) && (io.final_dram_id_wrreq_sb(subId) === ramId.U(1.W))
+				DRamWr_notrmw_sb(ramId)(bkId)(sbkId)   := io.final_wr_req_notrmw_sb(bkId*sbkNum+sbkId) && 
+				                     (io.final_dram_id_wrreq_sb(bkId*sbkNum+sbkId) === ramId.U(ramIdBits.W))
+				DRamRmwRd_sb(ramId)(bkId)(sbkId)       := io.final_val_dram_req_sb(bkId*sbkNum+sbkId) && 
+				                     (io.final_dram_id_rdreq_sb(bkId*sbkNum+sbkId) === ramId.U(ramIdBits.W)) && 
+									 io.final_inc16_req_sb(bkId*sbkNum+sbkId)
+				internalDramSbByteEn(ramId)(bkId)(sbkId) := io.final_byte_en_req_sb(bkId*sbkNum+sbkId)
+				io.DRamRdSB(ramId)(bkId)(sbkId)    :=xcff(1,G2CLK,localReset,g2GateEnable,DRamRd_sb_var)
+                io.DRamWrSB(ramId)(bkId)(sbkId)    :=xcff(1,G2CLK,localReset,g2GateEnable,DRamWr_sb_var)
 				
 
            }
-		   io.DRamRd(ramId)(bkId)       := io.DRamRdSB(ramId)(bkId).orR
-		   io.DRamWr(ramId)(bkId)       := DRamWr_notrmw_sb(ramId)(bkId).orR
-		   io.DRamRmwRd(ramId)(bkId)    := DRamRmwRd_sb(ramId)(bkId).orR
-		   val DRamRmwWr_pre = io.DRamWrSB(ramId)(bkId).orR
-           io.DRamRmwWr(ramId)(bkId)    :=xcff(1.G2CLK,reset,g2GateEnable,DRamRmwWr_pre)   
-		   val bankByteEn    = Cat(internalDramSbByteEn(ramId)(bkId).reverse)
+		   io.DRamRd(ramId)(bkId)       := io.DRamRdSB(ramId)(bkId).asUInt.orR
+		   io.DRamWr(ramId)(bkId)       := DRamWr_notrmw_sb(ramId)(bkId).asUInt.orR
+		   io.DRamRmwRd(ramId)(bkId)    := DRamRmwRd_sb(ramId)(bkId).asUInt.orR
+		   val DRamRmwWr_pre = io.DRamWrSB(ramId)(bkId).asUInt.orR
+           io.DRamRmwWr(ramId)(bkId)    := xcff(1, G2CLK,localReset,g2GateEnable,DRamRmwWr_pre)   
+		   val bankByteEn    = Cat(internalDramSbByteEn(ramId).reverse)
 		   io.DRamRdByteEn(ramId)(bkId)  := bankByteEn
 		   io.DRamWrByteEn(ramId)(bkId)  := bankByteEn
 
@@ -96,8 +102,8 @@ always @(posedge G2generalCLK or posedge MyReset) SG0DRam0RdS0_reg <= `XT_SEQ_DE
 							&& final_inc16_req_sb0
 										;
 
-        assign SG0DRam0Wr_notrmw_sb0   = final_wr_req_notrmw_sb0 && (final_dram_id_wrreq_sb0 == 1'h0);
-        assign SG0DRam0Wr_sb0   = final_wr_req_sb0 && (final_dram_id_wrreq_sb0 == 1'h0);
+        assign SG0DRam0Wr_notrmw_sb0   = final_wr_req_notrmw_sb0 && (final_dram_id_wrreq_sb == 1'h0);
+        assign SG0DRam0Wr_sb0   = final_wr_req_sb && (final_dram_id_wrreq_sb == 1'h0);
 // Output to the DRAM logic
 reg SG0DRam0WrS0_reg;
 assign SG0DRam0WrS0 = SG0DRam0WrS0_reg;

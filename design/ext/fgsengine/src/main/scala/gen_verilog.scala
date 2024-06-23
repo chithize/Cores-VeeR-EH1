@@ -17,9 +17,24 @@ import firrtl.annotations.RandomizeRegisterAnnotation
 object Modules_Verilog_Gen extends App {
   
 
-  chisel3.emitVerilog(new Xacc_lzc_generic(32))
-  chisel3.emitVerilog(new VecRegSlice)
-/*  val outputDir = "generated_verilog"
+ // chisel3.emitVerilog(new Xacc_lzc_generic(32),Array("--target-dir", "generated"))
+//  chisel3.emitVerilog(new VecRegSlice)
+// object VecRegSliceGen extends App {
+  val numRegs = 32
+  val regWidth = 128
+  val numWritePorts = 4
+  val numReadPorts = 6
+
+  val verilogFileName = s"VecRegSlice_${regWidth}bit_${numReadPorts}r${numWritePorts}w.v"
+  (new ChiselStage).emitVerilog(
+    new VecRegSlice(numRegs, regWidth, numWritePorts, numReadPorts),
+    Array("--target-dir", "generated", "--output-file", verilogFileName,
+          "--emission-options=disableMemRandomization,disableRegisterRandomization")
+  )
+//}
+
+  
+  /*  val outputDir = "generated_verilog"
   
   (new ChiselStage).execute(
     Array("-X", "verilog"),
@@ -80,7 +95,9 @@ object topMain extends App {
   (new ChiselStage).execute(
     chiselArgs,
     AnnotationSeq(
-      Seq(ChiselGeneratorAnnotation(() => new VecRegSlice),
+      Seq(
+     // ChiselGeneratorAnnotation(() => new VecRegSlice),
+      ChiselGeneratorAnnotation(() => new XBarMux4Hw_DataSel),
       //EmitAllModulesAnnotation(classOf[SystemVerilogEmitter])
       EmitAllModulesAnnotation(classOf[VerilogEmitter])
       ),

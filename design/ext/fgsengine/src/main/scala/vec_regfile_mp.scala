@@ -12939,6 +12939,21 @@ import chisel3.experimental.{chiselName, annotate, ChiselAnnotation}
 //import chisel3.internal.instanceId.InstanceId
 import firrtl.annotations._
 import primitives._
+import chisel3.experimental.DataMirror
+import chisel3.internal.firrtl.Port
+object AutoNameHelper {
+// Helper function to add prefixes to IO signals
+def autoNameIo[T <: Record](io: T): Unit = {
+  io.elements.foreach { case (name, data) =>
+    val prefix = DataMirror.directionOf(data) match {
+      case ActualDirection.Input => "i_"
+      case ActualDirection.Output => "o_"
+      case _ => ""
+    }
+    data.suggestName(s"$prefix$name")
+  }
+ }
+}
 
 
 class VecRegSlice(
@@ -12956,8 +12971,10 @@ class VecRegSlice(
         val we          = Input(Vec(numWritePorts, UInt((regWidth/8).W)))
         val rd_addr     = Input(Vec(numReadPorts, UInt(addrWidth.W)))
         val rd_data     = Output(Vec(numReadPorts,UInt(regWidth.W)))
-})
+        //AutoNameHelper.autoNameIo(this)
+    })
 
+        AutoNameHelper.autoNameIo(io)
     // def nameSignals[T <: Data](signal: T, name: String): T = {
     //     annotate(new ChiselAnnotation {
     //         def toFirrtl: Annotation = {
