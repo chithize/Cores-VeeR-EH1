@@ -2,7 +2,7 @@
 import chisel3._
 import chisel3.util._
 
-class GatherRegisterCtrl(eleNum:Int=32,eleWidth:Int:16,regNo:Int=0) extends Module {
+class GatherRegisterCtrl(eleNum:Int=32,eleWidth:Int=16,regNo:Int=0) extends Module {
  val io = IO(new Bundle {
 
    val waitClkGate = Input(Bool())
